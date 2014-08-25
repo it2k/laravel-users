@@ -1,0 +1,23 @@
+{
+    "name": "it2k/laravel-users",
+    "description": "Модуль управления пользовательми для фрейморка laravel.",
+    "authors": [
+        {
+            "name": "Egor Zyuskin",
+            "email": "egor@zyuskin.ru"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "4.2.*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
+        "psr-0": {
+            "It2k\\LaravelUsers\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
