@@ -2,6 +2,7 @@
     "name": "it2k/laravel-users",
     "description": "Модуль управления пользовательми для фрейморка laravel.",
     "license": "GPL2",
+    "keywords": ["Laravel", "auth", "authentication", "users", "login", "registration"],
     "authors": [
         {
             "name": "Egor Zyuskin",
