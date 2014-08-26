@@ -1,10 +1,13 @@
-<?php
+<?php namespace It2k\LaravelUsers\Controllers;
 
-class AuthController extends BaseController {
+use Controller;
+use Redirect;
 
-	public function makeLogin()
+class AuthController extends Controller {
+
+	public function login()
 	{
-		return 'Make login';
+		return Redirect::back()->withErrors('hren');
 	}
 
 }

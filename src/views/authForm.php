@@ -73,51 +73,62 @@
 	<div class="container">
 		<div class="row">
 			<div class="my-page-header">
-
+				<?php if ($errors->count() > 0): ?>
+				<div class="col-md-6 col-md-offset-3">
+					<div class="alert alert-danger alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<?php
+						foreach ($errors->all('<li>:message</li>') as $message)
+						{
+						    echo $message;
+						}
+						?>
+					</div>
+				</div>
+				<?php endif; ?>
 				<div class="col-md-4 col-md-offset-4">
-
 					<div id="loginForm" style="display:none">
 						<?php echo Form::open(array('url' => 'login', 'class' => 'form-signin', 'role' => 'form')); ?>
-							<h2 class="form-signin-heading"><?php echo Lang::get('laravelUsers::auth.Auth')?></h2>
-							<input name="username" type="username" class="form-control form-control-top" placeholder="<?php echo Lang::get('laravelUsers::auth.UserNameOrEmail')?>" required autofocus>
-							<input name="password" type="password" class="form-control form-control-bottom" placeholder="<?php echo Lang::get('laravelUsers::auth.Password')?>" required>
+							<h2 class="form-signin-heading"><?php echo Lang::get('LaravelUsers::auth.Auth')?></h2>
+							<input name="username" type="username" class="form-control form-control-top" placeholder="<?php echo Lang::get('LaravelUsers::auth.UserNameOrEmail')?>" required autofocus>
+							<input name="password" type="password" class="form-control form-control-bottom" placeholder="<?php echo Lang::get('LaravelUsers::auth.Password')?>" required>
 							<div class="checkbox">
 								<label>
-									<input name="remember" type="checkbox" value="1"> <?php echo Lang::get('laravelUsers::auth.RememberMe')?>
+									<input name="remember" type="checkbox" value="1"> <?php echo Lang::get('LaravelUsers::auth.RememberMe')?>
 								</label>
 							</div>
-							<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo Lang::get('laravelUsers::auth.SignIn')?></button>
+							<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo Lang::get('LaravelUsers::auth.SignIn')?></button>
 						<?php echo Form::close(); ?>
 						<ul>
-							<li><a href="#registration" onclick="showForm('registrationForm', 'loginForm')"><?php echo Lang::get('laravelUsers::auth.Registration')?></a></li>
-							<li><a href="#lost_password" onclick="showForm('lostPasswordForm', 'loginForm')"><?php echo Lang::get('laravelUsers::auth.LostPassword')?></a></li>
+							<li><a href="#registration" onclick="showForm('registrationForm', 'loginForm')"><?php echo Lang::get('LaravelUsers::auth.Registration')?></a></li>
+							<li><a href="#lost_password" onclick="showForm('lostPasswordForm', 'loginForm')"><?php echo Lang::get('LaravelUsers::auth.LostPassword')?></a></li>
 						</ul>
 					</div>
 
 					<div id="registrationForm" style="display:none">
 						<?php echo Form::open(array('url' => 'registration', 'class' => 'form-signin', 'role' => 'form')); ?>
-							<h2 class="form-signin-heading"><?php echo Lang::get('laravelUsers::auth.Registration')?></h2>
-							<input name="username" type="username" class="form-control form-control-top" placeholder="<?php echo Lang::get('laravelUsers::auth.UserName')?>" required autofocus>
-							<input name="email" type="email" class="form-control form-control-center" placeholder="<?php echo Lang::get('laravelUsers::auth.Email')?>" required>
-							<input name="password" type="password" class="form-control form-control-center" placeholder="<?php echo Lang::get('laravelUsers::auth.Password')?>" required>
-							<input name="password_confirm" type="password" class="form-control form-control-bottom" placeholder="<?php echo Lang::get('laravelUsers::auth.PasswordConfirm')?>" required>
-							<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo Lang::get('laravelUsers::auth.SignUp')?></button>
+							<h2 class="form-signin-heading"><?php echo Lang::get('LaravelUsers::auth.Registration')?></h2>
+							<input name="username" type="username" class="form-control form-control-top" placeholder="<?php echo Lang::get('LaravelUsers::auth.UserName')?>" required autofocus>
+							<input name="email" type="email" class="form-control form-control-center" placeholder="<?php echo Lang::get('LaravelUsers::auth.Email')?>" required>
+							<input name="password" type="password" class="form-control form-control-center" placeholder="<?php echo Lang::get('LaravelUsers::auth.Password')?>" required>
+							<input name="password_confirm" type="password" class="form-control form-control-bottom" placeholder="<?php echo Lang::get('LaravelUsers::auth.PasswordConfirm')?>" required>
+							<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo Lang::get('LaravelUsers::auth.SignUp')?></button>
 						<?php echo Form::close(); ?>
 						<ul>
-							<li><a href="#" onclick="showForm('loginForm', 'registrationForm')"><?php echo Lang::get('laravelUsers::auth.Auth')?></a></li>
-							<li><a href="#lost_password" onclick="showForm('lostPasswordForm', 'registrationForm')"><?php echo Lang::get('laravelUsers::auth.LostPassword')?></a></li>
+							<li><a href="#" onclick="showForm('loginForm', 'registrationForm')"><?php echo Lang::get('LaravelUsers::auth.Auth')?></a></li>
+							<li><a href="#lost_password" onclick="showForm('lostPasswordForm', 'registrationForm')"><?php echo Lang::get('LaravelUsers::auth.LostPassword')?></a></li>
 						</ul>
 					</div>
 
 					<div id="lostPasswordForm" style="display:none">
 						<?php echo Form::open(array('url' => 'lost_password', 'class' => 'form-signin', 'role' => 'form')); ?>
-							<h2 class="form-signin-heading"><?php echo Lang::get('laravelUsers::auth.LostPassword')?></h2>
+							<h2 class="form-signin-heading"><?php echo Lang::get('LaravelUsers::auth.LostPassword')?></h2>
 							<input name="email" type="email" class="form-control form-control-one" placeholder="Email" required autofocus>
-							<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo Lang::get('laravelUsers::auth.Remind')?></button>
+							<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo Lang::get('LaravelUsers::auth.Remind')?></button>
 						<?php echo Form::close(); ?>
 						<ul>
-							<li><a href="#" onclick="showForm('loginForm', 'lostPasswordForm')"><?php echo Lang::get('laravelUsers::auth.Auth')?></a></li>
-							<li><a href="#registration" onclick="showForm('registrationForm', 'lostPasswordForm')"><?php echo Lang::get('laravelUsers::auth.Registration')?></a></li>
+							<li><a href="#" onclick="showForm('loginForm', 'lostPasswordForm')"><?php echo Lang::get('LaravelUsers::auth.Auth')?></a></li>
+							<li><a href="#registration" onclick="showForm('registrationForm', 'lostPasswordForm')"><?php echo Lang::get('LaravelUsers::auth.Registration')?></a></li>
 						</ul>
 					</div>
 
@@ -134,9 +145,9 @@
 	function showForm(openedForm, closedForm)
 	{
 		var titleArray = [];
-		titleArray['loginForm']        = '<?php echo Lang::get('laravelUsers::auth.Auth')?>';
-		titleArray['registrationForm'] = '<?php echo Lang::get('laravelUsers::auth.Registration')?>';
-		titleArray['lostPasswordForm'] = '<?php echo Lang::get('laravelUsers::auth.LostPassword')?>';
+		titleArray['loginForm']        = '<?php echo Lang::get('LaravelUsers::auth.Auth')?>';
+		titleArray['registrationForm'] = '<?php echo Lang::get('LaravelUsers::auth.Registration')?>';
+		titleArray['lostPasswordForm'] = '<?php echo Lang::get('LaravelUsers::auth.LostPassword')?>';
 
 		if(closedForm)
 		{

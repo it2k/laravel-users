@@ -18,7 +18,7 @@ class LaravelUsersServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('it2k/laravelUsers');
+		$this->package('It2k/LaravelUsers');
 
 		include __DIR__.'/../../routes.php';
 	}
