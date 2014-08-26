@@ -89,6 +89,7 @@
 
 			<div class="my-page-header">
 				<div class="col-md-4 col-md-offset-4">
+
 					<div id="loginForm" style="display:none">
 						<?php echo Form::open(array('url' => 'login', 'class' => 'form-signin', 'role' => 'form')); ?>
 							<h2 class="form-signin-heading"><?php echo Lang::get('LaravelUsers::auth.Auth')?></h2>
@@ -102,7 +103,9 @@
 							<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo Lang::get('LaravelUsers::auth.SignIn')?></button>
 						<?php echo Form::close(); ?>
 						<ul>
+							<?php if(Config::get('LaravelUsers::auth.registration-allow')):?>
 							<li><a href="#registration" onclick="showForm('registrationForm', 'loginForm')"><?php echo Lang::get('LaravelUsers::auth.Registration')?></a></li>
+							<?php endif;?>
 							<li><a href="#lost_password" onclick="showForm('lostPasswordForm', 'loginForm')"><?php echo Lang::get('LaravelUsers::auth.LostPassword')?></a></li>
 						</ul>
 					</div>
@@ -110,8 +113,8 @@
 					<div id="registrationForm" style="display:none">
 						<?php echo Form::open(array('url' => 'registration', 'class' => 'form-signin', 'role' => 'form')); ?>
 							<h2 class="form-signin-heading"><?php echo Lang::get('LaravelUsers::auth.Registration')?></h2>
-							<input name="username" type="username" class="form-control form-control-top" placeholder="<?php echo Lang::get('LaravelUsers::auth.UserName')?>" required autofocus>
-							<input name="email" type="email" class="form-control form-control-center" placeholder="<?php echo Lang::get('LaravelUsers::auth.Email')?>" required>
+							<input name="username" type="username" class="form-control form-control-top" placeholder="<?php echo Lang::get('LaravelUsers::auth.UserName')?>" value="<?php echo Input::old('username')?>" required autofocus>
+							<input name="email" type="email" class="form-control form-control-center" placeholder="<?php echo Lang::get('LaravelUsers::auth.Email')?>" value="<?php echo Input::old('email')?>" required>
 							<input name="password" type="password" class="form-control form-control-center" placeholder="<?php echo Lang::get('LaravelUsers::auth.Password')?>" required>
 							<input name="password_confirm" type="password" class="form-control form-control-bottom" placeholder="<?php echo Lang::get('LaravelUsers::auth.PasswordConfirm')?>" required>
 							<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo Lang::get('LaravelUsers::auth.SignUp')?></button>
@@ -130,8 +133,22 @@
 						<?php echo Form::close(); ?>
 						<ul>
 							<li><a href="#" onclick="showForm('loginForm', 'lostPasswordForm')"><?php echo Lang::get('LaravelUsers::auth.Auth')?></a></li>
+							<?php if(Config::get('LaravelUsers::auth.registration-allow')):?>
 							<li><a href="#registration" onclick="showForm('registrationForm', 'lostPasswordForm')"><?php echo Lang::get('LaravelUsers::auth.Registration')?></a></li>
+							<?php endif; ?>
 						</ul>
+					</div>
+
+					<div id="confirmEmailForm" style="display:none">
+						<?php echo Form::open(array('method' => 'GET','url' => 'confirm_email', 'class' => 'form-signin', 'role' => 'form')); ?>
+							<h2 class="form-signin-heading"><?php echo Lang::get('LaravelUsers::auth.ConfirmEmail')?></h2>
+							<input name="email" type="username" class="form-control form-control-top" placeholder="<?php echo Lang::get('LaravelUsers::auth.Email')?>" value="<?php echo Input::get('email')?>" required autofocus>
+							<input name="token" type="text" class="form-control form-control-bottom" placeholder="<?php echo Lang::get('LaravelUsers::auth.Token')?>" required>
+							<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo Lang::get('LaravelUsers::auth.Confirm')?></button>
+						<?php echo Form::close(); ?>
+						<div class="alert alert-info alert-dismissible" role="alert">
+							<?php echo Lang::get('LaravelUsers::auth.ConfirmEmailText')?>
+						</div>
 					</div>
 
 				</div>
@@ -150,6 +167,7 @@
 		titleArray['loginForm']        = '<?php echo Lang::get('LaravelUsers::auth.Auth')?>';
 		titleArray['registrationForm'] = '<?php echo Lang::get('LaravelUsers::auth.Registration')?>';
 		titleArray['lostPasswordForm'] = '<?php echo Lang::get('LaravelUsers::auth.LostPassword')?>';
+		titleArray['confirmEmailForm'] = '<?php echo Lang::get('LaravelUsers::auth.ConfirmEmail')?>';
 
 		if(closedForm)
 		{
@@ -172,6 +190,11 @@
 
 				case '#lost_password': {
 					showForm('lostPasswordForm');
+					break;
+				}
+
+				case '#confirm_email': {
+					showForm('confirmEmailForm');
 					break;
 				}
 
