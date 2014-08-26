@@ -72,20 +72,22 @@
 	<!-- Begin page content -->
 	<div class="container">
 		<div class="row">
-			<div class="my-page-header">
-				<?php if ($errors->count() > 0): ?>
-				<div class="col-md-6 col-md-offset-3">
-					<div class="alert alert-danger alert-dismissible" role="alert">
-						<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<?php
-						foreach ($errors->all('<li>:message</li>') as $message)
-						{
-						    echo $message;
-						}
-						?>
-					</div>
+
+			<?php if ($errors->count() > 0): ?>
+			<div class="col-md-6 col-md-offset-3">
+				<div class="alert alert-danger alert-dismissible" role="alert">
+					<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<?php
+					foreach ($errors->all('<li>:message</li>') as $message)
+					{
+					    echo $message;
+					}
+					?>
 				</div>
-				<?php endif; ?>
+			</div>
+			<?php endif; ?>
+
+			<div class="my-page-header">
 				<div class="col-md-4 col-md-offset-4">
 					<div id="loginForm" style="display:none">
 						<?php echo Form::open(array('url' => 'login', 'class' => 'form-signin', 'role' => 'form')); ?>

@@ -21,6 +21,14 @@ class LaravelUsersServiceProvider extends ServiceProvider {
 		$this->package('It2k/LaravelUsers');
 
 		include __DIR__.'/../../routes.php';
+
+		$this->app->bind('it2k::command.auth.add-user', function($app) {
+    		return new Commands\AddUserCommand();
+		});
+
+		$this->commands(array(
+    		'it2k::command.auth.add-user'
+		));
 	}
 
 	/**

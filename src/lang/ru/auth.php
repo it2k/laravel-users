@@ -13,4 +13,5 @@ return array(
 	'SignUp' => 'Зарегестрироваться',
 	'Remind' => 'Напомнить',
 	'RememberMe' => 'Запомнить меня',
+	'InvalidLoginOrPassword' => 'Не верное имя пользователя или пароль',
 );
