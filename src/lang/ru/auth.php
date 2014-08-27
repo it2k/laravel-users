@@ -17,6 +17,7 @@ return array(
 	'ConfirmEmail' => 'Подтверждение email адреса',
 	'Confirm' => 'Подтверждение',
 	'Token' => 'Ключ',
-	'ConfirmEmailText' => 'Для подтверждения на Ваш email адрес выслан ключ. Вы можете ввести его в форму выше или пройти по ссылке из письма.',
+	'ConfirmEmailFormText' => 'Для подтверждения на Ваш email адрес выслан ключ. Вы можете ввести его в форму выше или пройти по ссылке из письма.',
+	'ConfirmEmailText' => 'Для подтверждения регистрации пройдите по этой <a href="http://localhost:8000/confirm_email?email=:email&token=:token">ссылке</a>.',
 	'WrongToken' => 'Не верный ключ',
 );

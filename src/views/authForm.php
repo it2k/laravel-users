@@ -147,7 +147,7 @@
 							<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo Lang::get('LaravelUsers::auth.Confirm')?></button>
 						<?php echo Form::close(); ?>
 						<div class="alert alert-info alert-dismissible" role="alert">
-							<?php echo Lang::get('LaravelUsers::auth.ConfirmEmailText')?>
+							<?php echo Lang::get('LaravelUsers::auth.ConfirmEmailFormText')?>
 						</div>
 					</div>
 
