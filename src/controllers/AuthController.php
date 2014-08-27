@@ -14,34 +14,57 @@ use DB;
 use User;
 use App;
 use Hash;
+use Mail;
 
 class AuthController extends Controller {
 
 	public function login()
-	{
+	{		
 		$credentials = Input::only(['username', 'password']);
 		$remember = (intval(Input::get('remember'))) ? true : false;
 
 		if (!Validator::make($credentials, ['username' => 'required|email'])->fails())
 		{
-			$validation = Validator::make($credentials, ['password' => 'required']);
-			$credentials['email'] = $credentials['username'];
+			$validation = Validator::make($credentials, ['password' => 'required|min:3|max:40']);
+			$credentials['email'] = strtolower($credentials['username']);
 			unset($credentials['username']);
+			$user = User::where('email', '=', $credentials['email'])->first();
 		}
 		else
 		{	
-			$validation = Validator::make($credentials, ['username' => 'required', 'password' => 'required']);
+			$validation = Validator::make($credentials, ['username' => 'required|min:3', 'password' => 'required|min:3|max:40']);
+			$user = User::where('username', '=', $credentials['username'])->first();
 		}
 
+		if (!$user)
+			return Redirect::back()->withErrors(Lang::get('LaravelUsers::auth.InvalidLoginOrPassword'));
+
+		if ($user->last_bad_login >= Carbon::now()->subMinutes(Config::get('LaravelUsers::auth.auth-check-last-minutes')) && $user->bad_login_count >= Config::get('LaravelUsers::auth.auth-check-last-count'))
+			App::abort(500);
+
 		if ($validation->fails())
-			return Redirect::back()->withErrors($validation->messages());
+			return Redirect::back()->withErrors($validation->messages());		
 
 		$credentials['enable'] = 1;
 
 		if (Auth::attempt($credentials, $remember))
+		{
+			$user->bad_login_count = 0;
+			$user->last_login = Carbon::now();
+			$user->last_login_from_id = Request::getClientIp();
+			$user->save();
+
 			return Redirect::intended(route(Config::get('auth::successful-login-route')));
+		}
 		else
+		{
+			$user->bad_login_count = $user->bad_login_count + 1;
+			$user->last_bad_login = Carbon::now();
+			$user->last_bad_login_from_ip = Request::getClientIp();
+			$user->save();
+
 			return Redirect::back()->withErrors(Lang::get('LaravelUsers::auth.InvalidLoginOrPassword'));
+		}
 	}
 
 	public function registration()
@@ -82,7 +105,12 @@ class AuthController extends Controller {
 
 		$credentials['email_confirm_token'] = hash_hmac('sha1', str_shuffle(sha1($credentials['email'].microtime(true))), Config::get('app.key'));
 
-		User::create($credentials);
+		$user = User::create($credentials);
+
+		Mail::send('LaravelUsers::emailConfirm', array('token' => $credentials['email_confirm_token'], 'email' => $credentials['email']), function ($message) use ($user)
+		{
+			$message->to($user->email, $user->username)->subject('registration');
+		});
 
 		return Redirect::to('auth?email='.$credentials['email'].'#confirm_email');
 	}
