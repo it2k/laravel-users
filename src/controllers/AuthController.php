@@ -164,7 +164,14 @@ class AuthController extends Controller {
 		if(!$user)
 			return Redirect::to('auth#lost_password')->withInput()->withErrors(Lang::get('LaravelUsers::auth.WrongEmail'));
 
-		$token = Token::create(['change_password'], Carbon::now()->addDays(7), $user);
+		$token = Token::create('change_password', Carbon::now()->addDays(7), $user);
+
+		/*
+		Mail::send('LaravelUsers::emailConfirm', array('token' => $credentials['email_confirm_token'], 'email' => $credentials['email']), function ($message) use ($user)
+		{
+			$message->to($user->email, $user->username)->subject('registration');
+		});*/
+		return Redirect::to('auth?email='.$email.'#lost_password');
 
 	}
 
