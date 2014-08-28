@@ -1,7 +1,7 @@
 <?php
 
 return array(
-	'successful-login-route' => '/',
+	'successful-login-url' => '/',
 
 	'auth-check-last-minutes' => 3,
 	'auth-check-last-count' => 3,

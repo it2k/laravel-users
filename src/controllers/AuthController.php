@@ -18,6 +18,10 @@ use Mail;
 
 class AuthController extends Controller {
 
+	/**
+	 * Авторизация нового пользователя
+	 * @return Redirect
+	 */
 	public function login()
 	{		
 		$credentials = Input::only(['username', 'password']);
@@ -37,36 +41,40 @@ class AuthController extends Controller {
 		}
 
 		if (!$user)
-			return Redirect::back()->withErrors(Lang::get('LaravelUsers::auth.InvalidLoginOrPassword'));
+			return Redirect::back()->withInput()->withErrors(Lang::get('LaravelUsers::auth.InvalidLoginOrPassword'));
 
 		if ($user->last_bad_login >= Carbon::now()->subMinutes(Config::get('LaravelUsers::auth.auth-check-last-minutes')) && $user->bad_login_count >= Config::get('LaravelUsers::auth.auth-check-last-count'))
 			App::abort(500);
 
 		if ($validation->fails())
-			return Redirect::back()->withErrors($validation->messages());		
+			return Redirect::back()->withInput()->withErrors($validation->messages());		
 
 		$credentials['enable'] = 1;
 
 		if (Auth::attempt($credentials, $remember))
 		{
-			$user->bad_login_count = 0;
-			$user->last_login = Carbon::now();
-			$user->last_login_from_id = Request::getClientIp();
+			$user->bad_login_count    = 0;
+			$user->last_bad_login     = '';
+			$user->last_login         = Carbon::now();
+			$user->last_login_from_ip = Request::getClientIp();
 			$user->save();
 
-			return Redirect::intended(route(Config::get('auth::successful-login-route')));
+			return Redirect::intended(Config::get('LaravelUsers::auth.successful-login-url'));
 		}
 		else
 		{
-			$user->bad_login_count = $user->bad_login_count + 1;
-			$user->last_bad_login = Carbon::now();
+			$user->bad_login_count        = $user->bad_login_count + 1;
+			$user->last_bad_login         = Carbon::now();
 			$user->last_bad_login_from_ip = Request::getClientIp();
 			$user->save();
 
-			return Redirect::back()->withErrors(Lang::get('LaravelUsers::auth.InvalidLoginOrPassword'));
+			return Redirect::back()->withInput()->withErrors(Lang::get('LaravelUsers::auth.InvalidLoginOrPassword'));
 		}
 	}
-
+	/**
+	 * Регистрация нового пользователя
+	 * @return Redirect
+	 */
 	public function registration()
 	{
 		if(!Config::get('LaravelUsers::auth.registration-allow'))

@@ -93,8 +93,8 @@
 					<div id="loginForm" style="display:none">
 						<?php echo Form::open(array('url' => 'login', 'class' => 'form-signin', 'role' => 'form')); ?>
 							<h2 class="form-signin-heading"><?php echo Lang::get('LaravelUsers::auth.Auth')?></h2>
-							<input name="username" type="username" class="form-control form-control-top" placeholder="<?php echo Lang::get('LaravelUsers::auth.UserNameOrEmail')?>" required autofocus>
-							<input name="password" type="password" class="form-control form-control-bottom" placeholder="<?php echo Lang::get('LaravelUsers::auth.Password')?>" required>
+							<input name="username" type="username" class="form-control form-control-top" placeholder="<?php echo Lang::get('LaravelUsers::auth.UserNameOrEmail')?>" value="<?php echo Input::old('username')?>" required autofocus>
+							<input name="password" type="password" class="form-control form-control-bottom" placeholder="<?php echo Lang::get('LaravelUsers::auth.Password')?>" value="" required>
 							<div class="checkbox">
 								<label>
 									<input name="remember" type="checkbox" value="1"> <?php echo Lang::get('LaravelUsers::auth.RememberMe')?>
