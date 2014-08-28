@@ -29,6 +29,9 @@ class LaravelUsersServiceProvider extends ServiceProvider {
 		$this->commands(array(
     		'it2k::command.auth.add-user'
 		));
+
+		$loader = \Illuminate\Foundation\AliasLoader::getInstance();
+  		$loader->alias('Token', 'It2k\LaravelUsers\Facades\Token');
 	}
 
 	/**
@@ -38,7 +41,10 @@ class LaravelUsersServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		//
+		$this->app['token'] = $this->app->share(function($app)
+  		{
+    		return new TokenManager;
+  		});
 	}
 
 	/**
@@ -48,7 +54,7 @@ class LaravelUsersServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array();
+		return array('token');
 	}
 
 }
