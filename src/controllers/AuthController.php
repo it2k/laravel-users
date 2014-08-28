@@ -15,12 +15,13 @@ use User;
 use App;
 use Hash;
 use Mail;
+use Token;
 
 class AuthController extends Controller {
 
 	/**
 	 * Авторизация нового пользователя
-	 * @return Redirect
+	 * @return Response
 	 */
 	public function login()
 	{		
@@ -73,7 +74,7 @@ class AuthController extends Controller {
 	}
 	/**
 	 * Регистрация нового пользователя
-	 * @return Redirect
+	 * @return Response
 	 */
 	public function registration()
 	{
@@ -143,6 +144,38 @@ class AuthController extends Controller {
 				return Redirect::to('auth?email='.$email.'#confirm_email')->withErrors(Lang::get('LaravelUsers::auth.WrongToken'));
 			}
 		}
+	}
+
+	/**
+	 * Функция восстановления пароля.
+	 * С проверкой на перебор email адресов.
+	 * 
+	 * @return Response
+	 */
+	public function lost_password()
+	{
+		$email = trim(strtolower(Input::get('email')));
+
+		if (Validator::make(['email' => $email], ['email' => 'required|email'])->fails())
+			return Redirect::to('auth#lost_password')->withInput()->withErrors(Lang::get('LaravelUsers::auth.WrongEmail'));
+
+		$user = User::where('email', '=', $email)->first();
+
+		if(!$user)
+			return Redirect::to('auth#lost_password')->withInput()->withErrors(Lang::get('LaravelUsers::auth.WrongEmail'));
+
+		$token = Token::create(['change_password'], Carbon::now()->addDays(7), $user);
+
+	}
+
+	/**
+	 * Функция смены паролья.
+	 * Для авторизованного пользователя спрашивает текущий пароль.
+	 * Для не авторизованного email адрес и token на смену пароля
+	 */
+	public function change_password()
+	{
+		//
 	}
 
 }
