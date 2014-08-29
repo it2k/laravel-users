@@ -30,6 +30,13 @@ class TokenManager {
 	protected $_key = null;
 
 	/**
+	 * Для каких действий пригоден ключ
+	 * 
+	 * @var array
+	 */
+	protected $_options = array();
+
+	/**
 	 * Функуия создания ключа и сохранения его в базу данных
 	 * 
 	 * @param mixed $options Для каких действий пригоден token
@@ -51,10 +58,10 @@ class TokenManager {
 		if (is_string($options))
 			$options = [$options];
 
-		$options_json = json_encode($options);
+		$this->_options = $options;
 
 		if ($unique)
-			$sql = DB::table('tokens')->whereRaw('user_id = "'.$user->id.'" and options = \''.$options_json.'\'')->delete();
+			DB::table('tokens')->whereRaw('user_id = "'.$user->id.'" and options = \''.json_encode($this->_options).'\'')->delete();
 
 		while (!$this->_key)
 		{
@@ -63,10 +70,7 @@ class TokenManager {
 				$this->_key = null;
 		}
 
-		//DB::insert('insert into tokens (user_id, expire, key, options, created_at) values (?, ?, ?, ?, ?)', [$user->id, $expire, $this->_key, json_decode($options_json), Carbon::now()]);
-		DB::table('tokens')->insert(array('user_id' => $user->id, 'expire' => $expire, 'key' => $this->_key, 'options' => $options_json, 'created_at' => Carbon::now()));
-
-		//die($last_query);
+		$this->_id = DB::table('tokens')->insertGetId(array('user_id' => $user->id, 'expire' => $expire, 'key' => $this->_key, 'options' => json_encode($this->_options), 'created_at' => Carbon::now()));
 
 		return $this;
 	}
@@ -79,7 +83,8 @@ class TokenManager {
 	 */
 	public function load($key)
 	{
-		//
+		$token_row = DB::table('tokens')->where('key', '=', $key)->first();
+		
 	}
 
 	/**
@@ -94,6 +99,15 @@ class TokenManager {
 
 		return $this->_user;
 
+	}
+
+	/**
+	 * Возвращает ключ текущего tokenа
+	 */
+	public function key()
+	{
+		if (!$this->_key)
+			App::abort(500, 'Token not loaded!');		
 	}
 
 	/**
