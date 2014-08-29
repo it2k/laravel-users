@@ -1,11 +1,10 @@
 <?php namespace It2k\LaravelUsers;
 
+use App, Auth, DB, Config, Carbon\Carbon;
+
 /**
  * Класс для работы с ключами от имени пользователя
  */
-
-use App, Auth, DB, Config, Carbon\Carbon;
-
 class TokenManager {
 	
 	/**
@@ -18,7 +17,7 @@ class TokenManager {
 	/**
 	 * Объект пользователя
 	 * 
-	 * @var User
+	 * @var \User
 	 */
 	protected $_user = null;
 
@@ -39,11 +38,11 @@ class TokenManager {
 	/**
 	 * Функуия создания ключа и сохранения его в базу данных
 	 * 
-	 * @param mixed $options Для каких действий пригоден token
-	 * @param timestamp $expire До кокого времени действует token
-	 * @param object $user Для кокого пользователя действуетс token. Если null то текущий
-	 * @param bool $unique Признак уникальный ключ или нет. Если уникальный то удаляются все ключи с этими же действиями
-	 * @return TokenManager $this;
+	 * @param $options mixed Для каких действий пригоден token
+	 * @param $expire \DateTime До кокого времени действует token
+	 * @param $user \User Для кокого пользователя действуетс token. Если null то текущий
+	 * @param $unique bool Признак уникальный ключ или нет. Если уникальный то удаляются все ключи с этими же действиями
+	 * @return \Token $this;
 	 */
 	public function create($options, $expire, $user = null, $unique = true)
 	{
@@ -79,18 +78,27 @@ class TokenManager {
 	 * Загружает token по ключу из базы данных
 	 * 
 	 * @param string $key
-	 * @return Token $this
+	 * @return \Token $this
 	 */
 	public function load($key)
 	{
 		$token_row = DB::table('tokens')->where('key', '=', $key)->first();
-		
+
+        if (!$token_row)
+            return $this;
+
+        $this->_id      = $token_row->id;
+        $this->_key     = $token_row->key;
+        $this->_options = json_decode($token_row->options);
+        $this->_user    = User::find($token_row->user_id);
+
+        return $this;
 	}
 
 	/**
 	 * Возвращает пользователя которому пренадлежит token
 	 * 
-	 * @return User
+	 * @return \User
 	 */
 	public function user()
 	{
@@ -103,12 +111,46 @@ class TokenManager {
 
 	/**
 	 * Возвращает ключ текущего tokenа
+     *
+     * @return string
 	 */
 	public function key()
 	{
 		if (!$this->_key)
-			App::abort(500, 'Token not loaded!');		
+			App::abort(500, 'Token not loaded!');
+
+        return $this->_key;
 	}
+
+    /**
+     * Проверяем валидный ли token
+     *
+     * @param $option string
+     * @return bool
+     */
+    public function valid($option = null)
+    {
+        if (!$this->_id)
+            return false;
+
+        if ($option)
+            return in_array($option, $this->_options);
+
+        return true;
+    }
+
+    /**
+     * Удаляет токен из базы данных
+     *
+     * @return void
+     */
+    public function destroy()
+    {
+        if (!$this->_id)
+            App::abort(500, 'Token not loaded!');
+
+        DB::table('tokens')->delete($this->_id);
+    }
 
 	/**
 	 * Функция генерации токена
