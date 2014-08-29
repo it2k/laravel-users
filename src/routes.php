@@ -7,7 +7,11 @@
 
 Route::group(['namespace' => 'It2k\LaravelUsers\Controllers'], function()
 {
-	Route::get('auth', function() { return View::make('LaravelUsers::authForm'); });
+    Route::get('login', function(){return View::make('LaravelUsers::loginForm'); });
+    Route::get('registration', function(){return View::make('LaravelUsers::registrationForm'); });
+    Route::get('lost_password', function(){return View::make('LaravelUsers::lostPasswordForm'); });
+    Route::get('change_password', function(){return View::make('LaravelUsers::changePasswordForm'); });
+    Route::get('change_email', function(){return View::make('LaravelUsers::changeEmailForm'); });
 	Route::get('logout', function()	{ Auth::logout(); return Redirect::to('/'); });
 	Route::get('confirm_email', array('uses' => 'AuthController@confirm_email'));
 	
